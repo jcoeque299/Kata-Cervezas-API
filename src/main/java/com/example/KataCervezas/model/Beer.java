@@ -1,5 +1,7 @@
 package com.example.KataCervezas.model;
 
+
+//Los imports tienen que ser de Java Persistence, no de org.springframework
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.Id;
@@ -7,8 +9,8 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
-@Table(name="beers")
-@Entity
+@Table(name="beers") //Nombre de la tabla en la base de datos (beers). Permite que el nombre de la clase y el nombre de la tabla sean distintos
+@Entity //Marca que es una tabla en la base de datos, para que se maneje como tal
 public class Beer{
     @Id
     Integer id;

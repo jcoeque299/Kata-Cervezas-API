@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Category{
     @Id
     Integer id;
-    @Column(name = "cat_name")
+    @Column(name = "cat_name") //Nombre de la columna en la base de datos (cat_name). Permite que el nombre de la propiedad y el nombre de la columna sean distintos
     String name;
     LocalDateTime last_mod;
 

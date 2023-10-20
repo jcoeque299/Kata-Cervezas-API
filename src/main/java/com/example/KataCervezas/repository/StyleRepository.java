@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface StyleRepository extends ListCrudRepository<Style,Integer> {
-    List<Style> findAllByName(String type);
+
 }

@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface BeerRepository extends ListCrudRepository<Beer,Integer> {
-    List<Beer> findAllByName(String type);
 }
