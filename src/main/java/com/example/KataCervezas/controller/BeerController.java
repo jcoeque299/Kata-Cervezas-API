@@ -24,12 +24,12 @@ public class BeerController {
         this.beerRepository = beerRepository;
     } //Crea una instancia del repositorio al construir el controlador
 
-    @GetMapping("/beers")
+    @GetMapping("/beers/")
     public List<Beer> findAll() {
         return beerRepository.findAll();
     }
 
-    @GetMapping("/beers/paged") //Es imposible, o al menos no he sido capaz de conseguir que una HEAD request devuelva un body. Si este codigo exacto lo mapeo a un HEAD, no funciona
+    @GetMapping("/beers") //Es imposible, o al menos no he sido capaz de conseguir que una HEAD request devuelva un body. Si este codigo exacto lo mapeo a un HEAD, no funciona
     public Page<Beer> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return beerRepository.findAll(pageRequest);
