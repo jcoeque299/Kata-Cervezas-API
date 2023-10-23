@@ -2,6 +2,8 @@ package com.example.KataCervezas.controller;
 
 import com.example.KataCervezas.model.Brewerie;
 import com.example.KataCervezas.repository.BrewerieRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,6 +24,12 @@ public class BrewerieController {
     @GetMapping("/breweries")
     public List<Brewerie> findall(){
         return brewerieRepository.findAll();
+    }
+
+    @GetMapping("/breweries/paged")
+    public Page<Brewerie> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return brewerieRepository.findAll(pageRequest);
     }
 
     @GetMapping("/brewerie/{id}")
