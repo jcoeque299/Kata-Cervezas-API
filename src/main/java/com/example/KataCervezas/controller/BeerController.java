@@ -2,17 +2,25 @@ package com.example.KataCervezas.controller;
 
 import com.example.KataCervezas.model.Beer;
 import com.example.KataCervezas.repository.BeerRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -20,8 +28,10 @@ import java.util.Optional;
 @CrossOrigin //Permite realizar requests desde un frontend JavaScript. Se debería de configurar la anotación para que el acceso sea controlado
 public class BeerController {
     private final BeerRepository beerRepository; //Importa el repositorio
-    public BeerController(BeerRepository beerRepository) {
+    private final ObjectMapper objectMapper;
+    public BeerController(BeerRepository beerRepository, ObjectMapper objectMapper) {
         this.beerRepository = beerRepository;
+        this.objectMapper = objectMapper;
     } //Crea una instancia del repositorio al construir el controlador
 
     @GetMapping("/beers/")
@@ -70,6 +80,22 @@ public class BeerController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.");
         }
         beerRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping("/beer/{id}")
+    public ResponseEntity<String> patch(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+        if(!beerRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.");
+        }
+        Beer beer = beerRepository.findById(id).orElseThrow();
+        //Extrae los campos introducidos en el body, y los actualiza uno a uno en la cerveza elegida para después guardar esos cambios
+        updates.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(Beer.class, key);
+            field.setAccessible(true);
+            ReflectionUtils.setField(field, beer, value);
+        });
+        beerRepository.save(beer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
