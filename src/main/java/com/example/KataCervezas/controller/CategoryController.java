@@ -22,12 +22,12 @@ public class CategoryController {
         this.categoryRepository = categoryRepository;
     }
 
-    @GetMapping("/categories/")
+    @GetMapping("/categories")
     public List<Category> findAll() {
         return categoryRepository.findAll();
     }
 
-    @GetMapping("/categories")
+    @GetMapping(path = "/categories", params = {"page", "size"})
     public Page<Category> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return categoryRepository.findAll(pageRequest);

@@ -22,12 +22,12 @@ public class StyleController {
         this.styleRepository = styleRepository;
     }
 
-    @GetMapping("/styles/")
+    @GetMapping("/styles")
     public List<Style> findAll() {
         return styleRepository.findAll();
     }
 
-    @GetMapping("/styles")
+    @GetMapping(path = "/styles", params = {"page", "size"})
     public Page<Style> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return styleRepository.findAll(pageRequest);

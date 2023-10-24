@@ -2,11 +2,7 @@ package com.example.KataCervezas.controller;
 
 import com.example.KataCervezas.model.Beer;
 import com.example.KataCervezas.repository.BeerRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,19 +23,22 @@ import java.util.Optional;
 @RequestMapping("/api")
 @CrossOrigin //Permite realizar requests desde un frontend JavaScript. Se debería de configurar la anotación para que el acceso sea controlado
 public class BeerController {
-    private final BeerRepository beerRepository; //Importa el repositorio
-    private final ObjectMapper objectMapper;
+    //Importa el repositorio
+    private final BeerRepository beerRepository;
+
+    //Crea una instancia del repositorio al construir el controlador
     public BeerController(BeerRepository beerRepository, ObjectMapper objectMapper) {
         this.beerRepository = beerRepository;
-        this.objectMapper = objectMapper;
-    } //Crea una instancia del repositorio al construir el controlador
+    }
 
-    @GetMapping("/beers/")
+    @GetMapping("/beers")
     public List<Beer> findAll() {
         return beerRepository.findAll();
     }
 
-    @GetMapping("/beers") //Es imposible, o al menos no he sido capaz de conseguir que una HEAD request devuelva un body. Si este codigo exacto lo mapeo a un HEAD, no funciona
+    //Es imposible, o al menos no he sido capaz de conseguir que una HEAD request devuelva un body. Si este codigo
+    //exacto lo mapeo a un HEAD, no funciona. Asi que las busquedas paginadas las he asignado a un GET
+    @GetMapping(path = "/beers", params = {"page", "size"})
     public Page<Beer> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return beerRepository.findAll(pageRequest);
@@ -92,7 +91,7 @@ public class BeerController {
         //Extrae los campos introducidos en el body, y los actualiza uno a uno en la cerveza elegida para después guardar esos cambios
         updates.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(Beer.class, key);
-            field.setAccessible(true);
+            field.setAccessible(true); //Los atributos son private en la clase. Esto los hace accesibles
             ReflectionUtils.setField(field, beer, value);
         });
         beerRepository.save(beer);

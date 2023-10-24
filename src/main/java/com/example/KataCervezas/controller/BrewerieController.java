@@ -21,12 +21,12 @@ public class BrewerieController {
         this.brewerieRepository = brewerieRepository;
     }
 
-    @GetMapping("/breweries/")
+    @GetMapping("/breweries")
     public List<Brewerie> findall(){
         return brewerieRepository.findAll();
     }
 
-    @GetMapping("/breweries")
+    @GetMapping(path = "/breweries", params = {"page", "size"})
     public Page<Brewerie> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return brewerieRepository.findAll(pageRequest);
