@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -11,34 +13,13 @@ import java.time.LocalDateTime;
 @Entity
 public class Category{
     @Id
+    @Getter @Setter
     Integer id;
     @Column(name = "cat_name") //Nombre de la columna en la base de datos (cat_name). Permite que el nombre de la propiedad y el nombre de la columna sean distintos
+    @Getter @Setter
     String name;
+    @Getter @Setter
     LocalDateTime last_mod;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDateTime getLast_mod() {
-        return last_mod;
-    }
-
-    public void setLast_mod(LocalDateTime last_mod) {
-        this.last_mod = last_mod;
-    }
 
     public Category(){}
     public Category(Integer id, String name, LocalDateTime last_mod) {
