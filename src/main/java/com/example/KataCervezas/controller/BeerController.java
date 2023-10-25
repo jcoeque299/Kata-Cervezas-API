@@ -21,12 +21,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin //Permite realizar requests desde un frontend JavaScript. Se debería de configurar la anotación para que el acceso sea controlado
+@CrossOrigin
 public class BeerController {
-    //Importa el repositorio
     private final BeerRepository beerRepository;
 
-    //Crea una instancia del repositorio al construir el controlador
     public BeerController(BeerRepository beerRepository, ObjectMapper objectMapper) {
         this.beerRepository = beerRepository;
     }
@@ -36,8 +34,7 @@ public class BeerController {
         return beerRepository.findAll();
     }
 
-    //Es imposible, o al menos no he sido capaz de conseguir que una HEAD request devuelva un body. Si este codigo
-    //exacto lo mapeo a un HEAD, no funciona. Asi que las busquedas paginadas las he asignado a un GET
+
     @GetMapping(path = "/beers", params = {"page", "size"})
     public Page<Beer> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -51,7 +48,6 @@ public class BeerController {
         }
         return beerRepository.findById(id);
     }
-    //@PathVariable para que se introduzca la id del enlace en la funcion. De otra manera, dará null y tirará un error
 
     @PostMapping("/beer")
     public ResponseEntity<String> create(@Valid @RequestBody Beer beer) {
@@ -88,10 +84,9 @@ public class BeerController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.");
         }
         Beer beer = beerRepository.findById(id).orElseThrow();
-        //Extrae los campos introducidos en el body, y los actualiza uno a uno en la cerveza elegida para después guardar esos cambios
         updates.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(Beer.class, key);
-            field.setAccessible(true); //Los atributos son private en la clase. Esto los hace accesibles
+            field.setAccessible(true);
             ReflectionUtils.setField(field, beer, value);
         });
         beerRepository.save(beer);

@@ -10,35 +10,22 @@ import java.time.LocalDateTime;
 
 @Table(name="breweries")
 @Entity
+@Getter @Setter
 public class Brewerie{
     @Id
-    @Getter @Setter
     Integer id;
-    @Getter @Setter
     String name;
-    @Getter @Setter
     String address1;
-    @Getter @Setter
     String address2;
-    @Getter @Setter
     String city;
-    @Getter @Setter
     String state;
-    @Getter @Setter
     String code;
-    @Getter @Setter
     String country;
-    @Getter @Setter
     String phone;
-    @Getter @Setter
     String website;
-    @Getter @Setter
     String filepath;
-    @Getter @Setter
     String descript;
-    @Getter @Setter
     Integer add_user;
-    @Getter @Setter
     LocalDateTime last_mod;
 
     public Brewerie(){}

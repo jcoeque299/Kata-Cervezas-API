@@ -12,16 +12,13 @@ import java.time.LocalDateTime;
 
 @Table(name="styles")
 @Entity
+@Getter @Setter
 public class Style{
     @Id
-    @Getter @Setter
     Integer id;
-    @Getter @Setter
     Integer cat_id;
     @Column(name = "style_name")
-    @Getter @Setter
     String name;
-    @Getter @Setter
     LocalDateTime last_mod;
 
     public Style(){}

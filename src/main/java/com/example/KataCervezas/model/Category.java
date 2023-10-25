@@ -11,14 +11,12 @@ import java.time.LocalDateTime;
 
 @Table(name="categories")
 @Entity
+@Getter @Setter
 public class Category{
     @Id
-    @Getter @Setter
     Integer id;
-    @Column(name = "cat_name") //Nombre de la columna en la base de datos (cat_name). Permite que el nombre de la propiedad y el nombre de la columna sean distintos
-    @Getter @Setter
+    @Column(name = "cat_name")
     String name;
-    @Getter @Setter
     LocalDateTime last_mod;
 
     public Category(){}
