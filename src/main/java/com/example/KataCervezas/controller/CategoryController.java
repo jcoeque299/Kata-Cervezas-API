@@ -1,5 +1,7 @@
 package com.example.KataCervezas.controller;
 
+import com.example.KataCervezas.error.BeerNotFoundException;
+import com.example.KataCervezas.error.CategoryNotFoundException;
 import com.example.KataCervezas.model.Category;
 import com.example.KataCervezas.repository.CategoryRepository;
 import org.springframework.data.domain.Page;
@@ -35,9 +37,7 @@ public class CategoryController {
 
     @GetMapping("/categorie/{id}")
     public Optional<Category> findById(@PathVariable Integer id) {
-        if(!categoryRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.");
-        }
+        categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
         return categoryRepository.findById(id);
     }
 }

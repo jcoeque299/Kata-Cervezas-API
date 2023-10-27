@@ -1,5 +1,7 @@
 package com.example.KataCervezas.controller;
 
+import com.example.KataCervezas.error.BeerAlreadyExistsException;
+import com.example.KataCervezas.error.BeerNotFoundException;
 import com.example.KataCervezas.model.Beer;
 import com.example.KataCervezas.repository.BeerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,47 +45,38 @@ public class BeerController {
 
     @GetMapping("/beer/{id}")
     public Optional<Beer> findById(@PathVariable Integer id) {
-        if(!beerRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.");
-        }
+        beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
         return beerRepository.findById(id);
     }
 
     @PostMapping("/beer")
-    public ResponseEntity<String> create(@Valid @RequestBody Beer beer) {
+    public ResponseEntity<?> create(@Valid @RequestBody Beer beer) {
         HttpHeaders locationHeader = new HttpHeaders();
         locationHeader.setLocation(URI.create("/api/beer/"+beer.getId()));
         if(beerRepository.existsById(beer.getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Content already exists.");
+            throw new BeerAlreadyExistsException(beer.getId());
         }
         beerRepository.save(beer);
-        return new ResponseEntity<>(locationHeader, HttpStatus.CREATED);
+        return new ResponseEntity<>(beer, locationHeader, HttpStatus.CREATED);
     }
 
     @PutMapping("/beer/{id}")
-    public ResponseEntity<String> update(@Valid @RequestBody Beer beer, @PathVariable Integer id) {
-        if(!beerRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.");
-        }
+    public ResponseEntity<?> update(@Valid @RequestBody Beer beer, @PathVariable Integer id) {
+        beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
         beerRepository.save(beer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/beer/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
-        if(!beerRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.");
-        }
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
         beerRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping("/beer/{id}")
-    public ResponseEntity<String> patch(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
-        if(!beerRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.");
-        }
-        Beer beer = beerRepository.findById(id).orElseThrow();
+    public ResponseEntity<?> patch(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+        Beer beer = beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
         updates.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(Beer.class, key);
             field.setAccessible(true);

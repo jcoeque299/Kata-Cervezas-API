@@ -1,5 +1,7 @@
 package com.example.KataCervezas.controller;
 
+import com.example.KataCervezas.error.BeerNotFoundException;
+import com.example.KataCervezas.error.StyleNotFoundException;
 import com.example.KataCervezas.model.Style;
 import com.example.KataCervezas.repository.StyleRepository;
 import org.springframework.data.domain.Page;
@@ -35,9 +37,7 @@ public class StyleController {
 
     @GetMapping("/style/{id}")
     public Optional<Style> findById(@PathVariable Integer id) {
-        if(!styleRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.");
-        }
+        styleRepository.findById(id).orElseThrow(() -> new StyleNotFoundException(id));
         return styleRepository.findById(id);
     }
 }
