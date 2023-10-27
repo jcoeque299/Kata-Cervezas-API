@@ -64,7 +64,7 @@ public class BeerController {
     public ResponseEntity<?> update(@Valid @RequestBody Beer beer, @PathVariable Integer id) {
         beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
         beerRepository.save(beer);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(beer, HttpStatus.OK);
     }
 
     @DeleteMapping("/beer/{id}")
@@ -83,6 +83,6 @@ public class BeerController {
             ReflectionUtils.setField(field, beer, value);
         });
         beerRepository.save(beer);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(beer, HttpStatus.OK);
     }
 }
