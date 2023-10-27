@@ -70,7 +70,7 @@ Todos los endpoints de este proyecto están situados bajo la url "/api"
   }
   ```
   
-  Si se introdujese una cerveza con una ID ya existente, se lanzará un error 400 con un mensaje avisando de que la cerveza ya existe. Si se crea la cerveza, se devolverá un código 201 con un location header cuyo contenido apunta a la URL del recurso creado
+  Si se introdujese una cerveza con una ID ya existente, se lanzará un error 409 con un mensaje avisando de que la cerveza ya existe. Si se crea la cerveza, se devolverá un código 201 con un location header cuyo contenido apunta a la URL del recurso creado, y un body conteniendo la cerveza creada
 
 #### PUT
 
@@ -96,7 +96,7 @@ Todos los endpoints de este proyecto están situados bajo la url "/api"
   }
   ```
 
-  Una vez realizada esta petición, la cerveza con ID 7000 tendría su nombre cambiado y se devolverá un código 204. Si la cerveza no existe, se devolverá un código 404 avisando de que la cerveza no existe
+  Una vez realizada esta petición, la cerveza con ID 7000 tendría su nombre cambiado y se devolverá un código 200 y un body conteniendo la cerveza modificada. Si la cerveza no existe, se devolverá un código 404 avisando de que la cerveza no existe
 
 #### PATCH
 
@@ -110,7 +110,7 @@ Todos los endpoints de este proyecto están situados bajo la url "/api"
   }
   ```
   
-  Solamente enviando estos datos, es posible cambiar el nombre de la misma forma que con la petición PUT. Si la petición es exitosa, se devolverá un código 204. Si la cerveza a modificar no se encuentra en la base de datos, se devolverá un error 404
+  Solamente enviando estos datos, es posible cambiar el nombre de la misma forma que con la petición PUT. Si la petición es exitosa, se devolverá un código 200 y un body conteniendo la cerveza modificada. Si la cerveza a modificar no se encuentra en la base de datos, se devolverá un error 404
 
 #### DELETE
 
