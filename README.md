@@ -54,7 +54,6 @@ Todos los endpoints de este proyecto están situados bajo la url "/api"
 
   ```
   {
-    "id": 7000,
     "brewery_id": 812,
     "name": "Hocus Pocus",
     "cat_id": 11,
@@ -69,18 +68,18 @@ Todos los endpoints de este proyecto están situados bajo la url "/api"
     "last_mod": "2010-07-22T20:00:20"
   }
   ```
-  
+  Este ejemplo creará una cerveza con la ID 5915, ya que es la siguiente ID libre en la base de datos. Es posible especificar una ID para la cerveza a crear, para ello, habrá que añadir un campo "id" en el body  
+
   Si se introdujese una cerveza con una ID ya existente, se lanzará un error 409 con un mensaje avisando de que la cerveza ya existe. Si se crea la cerveza, se devolverá un código 201 con un location header cuyo contenido apunta a la URL del recurso creado, y un body conteniendo la cerveza creada
 
 #### PUT
 
 + **/beer/{id}** --> Si se quiere modificar una cerveza, se deberá enviar una petición PUT a esta URL, especificando la id de la cerveza a modificar, y enviando un body con todos los datos de la cerveza, incluyendo aquellos que no vayan a cambiar
   
-  Enviando la petición a /beer/7000, siguiendo el ejemplo de antes:
+  Enviando la petición a /beer/5915, siguiendo el ejemplo de antes:
 
   ```
   {
-    "id": 7000,
     "brewery_id": 812,
     "name": "Nombre cambiado",
     "cat_id": 11,
@@ -96,13 +95,35 @@ Todos los endpoints de este proyecto están situados bajo la url "/api"
   }
   ```
 
-  Una vez realizada esta petición, la cerveza con ID 7000 tendría su nombre cambiado y se devolverá un código 200 y un body conteniendo la cerveza modificada. Si la cerveza no existe, se devolverá un código 404 avisando de que la cerveza no existe
+  Una vez realizada esta petición, la cerveza con ID 5915 tendría su nombre cambiado y se devolverá un código 200 y un body conteniendo la cerveza modificada. Si la cerveza no existe, se devolverá un código 404 avisando de que la cerveza no existe
+
+  Es posible cambiar la ID de la cerveza con una petición PUT. Para ello, hay que introducir un campo "id" en el body de la request. Una vez realizada la operación, los datos de la cerveza que tenía la ID introducida en el body se sobreescribirán por los de la ID introducida en el enlace de la request. Ejemplo:
+
+  ```
+  {
+    "id": 5914,
+    "brewery_id": 812,
+    "name": "Nombre e ID cambiados",
+    "cat_id": 11,
+    "style_id": 116,
+    "abv": 4.5,
+    "ibu": 0.0,
+    "srm": 0.0,
+    "upc": 0.0,
+    "filepath": "",
+    "descript": "Our take on a classic summer ale.  A toast to weeds, rays, and summer haze.  A light, crisp ale for mowing lawns, hitting lazy fly balls, and communing with nature, Hocus Pocus is offered up as a summer sacrifice to clodless days.\r\n\r\nIts malty sweetness finishes tart and crisp and is best apprediated with a wedge of orange.",
+    "add_user": 0,
+    "last_mod": "2010-07-22T20:00:20"
+  }
+  ```
+
+  Los datos de la cerveza con ID 5914 se sobreescribirían por los de la cerveza con ID 5915. Si no se encuentra la cerveza a sobreescribir, se lanzará un error 404 detallando que la cerveza a sobreescribir no existe  
 
 #### PATCH
 
 + **/beer/{id}** --> Si solamente se quiere modificar parcialmente una cerveza, es mejor idea utilizar una petición PATCH, en lugar de la petición PUT. La diferencia entre ambas, es que con esta petición PATCH solo tienes que enviar los campos que quieres modificar, en lugar de tener que reenviar todos los datos de la cerveza
 
-  Siguiendo el ejemplo anterior, enviando la petición a /beer/7000:
+  Siguiendo el ejemplo anterior, enviando la petición a /beer/5915:
 
   ```
   {

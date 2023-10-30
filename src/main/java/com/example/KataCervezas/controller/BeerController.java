@@ -2,6 +2,7 @@ package com.example.KataCervezas.controller;
 
 import com.example.KataCervezas.error.BeerAlreadyExistsException;
 import com.example.KataCervezas.error.BeerNotFoundException;
+import com.example.KataCervezas.error.BeerToOverwriteNotFoundException;
 import com.example.KataCervezas.model.Beer;
 import com.example.KataCervezas.repository.BeerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,10 +64,17 @@ public class BeerController {
     @PutMapping("/beer/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody Beer beer, @PathVariable Integer id) {
         beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
+        beerRepository.findById(beer.getId()).orElseThrow(() -> new BeerToOverwriteNotFoundException(beer.getId()));
+        //Si no se especifica ID, y, por lo tanto, solo se actualizan los datos
         if (beer.getId() == 0) {
             beer.setId(id);
+            beerRepository.save(beer);
         }
-        beerRepository.save(beer);
+        //Si se especifica ID, y, por lo tanto, se actualizan datos y/o se sobreescriben datos de otra cerveza
+        else {
+            beerRepository.deleteById(id);
+            beerRepository.save(beer);
+        }
         return new ResponseEntity<>(beer, HttpStatus.OK);
     }
 
