@@ -1,8 +1,6 @@
 package com.example.KataCervezas.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,7 +10,8 @@ import java.time.LocalDateTime;
 @Data @AllArgsConstructor @NoArgsConstructor
 public class Beer{
     @Id
-    Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer id = 0;
     Integer brewery_id;
     String name;
     Integer cat_id;

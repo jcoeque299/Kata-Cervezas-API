@@ -63,6 +63,9 @@ public class BeerController {
     @PutMapping("/beer/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody Beer beer, @PathVariable Integer id) {
         beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
+        if (beer.getId() == 0) {
+            beer.setId(id);
+        }
         beerRepository.save(beer);
         return new ResponseEntity<>(beer, HttpStatus.OK);
     }
