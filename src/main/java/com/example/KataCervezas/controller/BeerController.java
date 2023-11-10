@@ -64,14 +64,14 @@ public class BeerController {
     @PutMapping("/beer/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody Beer beer, @PathVariable Integer id) {
         beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
-        beerRepository.findById(beer.getId()).orElseThrow(() -> new BeerToOverwriteNotFoundException(beer.getId()));
-        //Si no se especifica ID, y, por lo tanto, solo se actualizan los datos
-        if (beer.getId() == 0) {
+        //Si no se especifica ID o se especifica la ID de la propia cerveza a modificar, y, por lo tanto, solo se actualizan los datos
+        if (beer.getId() == 0 || id.equals(beer.getId())) {
             beer.setId(id);
             beerRepository.save(beer);
         }
-        //Si se especifica ID, y, por lo tanto, se actualizan datos y/o se sobreescriben datos de otra cerveza
+        //Si se especifica ID, y, por lo tanto, se sobreescriben datos de una cerveza con otra, modificando o no sus datos a la vez
         else {
+            beerRepository.findById(beer.getId()).orElseThrow(() -> new BeerToOverwriteNotFoundException(beer.getId()));
             beerRepository.deleteById(id);
             beerRepository.save(beer);
         }
