@@ -7,6 +7,7 @@ import com.example.KataCervezas.repository.CategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,19 +26,21 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public ResponseEntity<?> findAll() {
+        List<Category> allCategories = categoryRepository.findAll();
+        return new ResponseEntity<>(allCategories, HttpStatus.OK);
     }
 
     @GetMapping(path = "/categories", params = {"page", "size"})
-    public Page<Category> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
+    public ResponseEntity<?> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return categoryRepository.findAll(pageRequest);
+        Page<Category> allCategoriesPaged = categoryRepository.findAll(pageRequest);
+        return new ResponseEntity<>(allCategoriesPaged, HttpStatus.OK);
     }
 
     @GetMapping("/categorie/{id}")
-    public Optional<Category> findById(@PathVariable Integer id) {
-        categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
-        return categoryRepository.findById(id);
+    public ResponseEntity<?> findById(@PathVariable Integer id) {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
+        return new ResponseEntity<>(category, HttpStatus.OK);
     }
 }

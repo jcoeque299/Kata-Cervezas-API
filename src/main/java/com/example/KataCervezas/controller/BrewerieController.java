@@ -7,6 +7,7 @@ import com.example.KataCervezas.repository.BrewerieRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,19 +25,21 @@ public class BrewerieController {
     }
 
     @GetMapping("/breweries")
-    public List<Brewerie> findall(){
-        return brewerieRepository.findAll();
+    public ResponseEntity<?> findAll(){
+        List<Brewerie> allBreweries = brewerieRepository.findAll();
+        return new ResponseEntity<>(allBreweries, HttpStatus.OK);
     }
 
     @GetMapping(path = "/breweries", params = {"page", "size"})
-    public Page<Brewerie> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
+    public ResponseEntity<?> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return brewerieRepository.findAll(pageRequest);
+        Page<Brewerie> allBreweriesPaged = brewerieRepository.findAll(pageRequest);
+        return new ResponseEntity<>(allBreweriesPaged, HttpStatus.OK);
     }
 
     @GetMapping("/brewerie/{id}")
-    public Optional<Brewerie> findById(@PathVariable Integer id) {
-        brewerieRepository.findById(id).orElseThrow(() -> new BrewerieNotFoundException(id));
-        return brewerieRepository.findById(id);
+    public ResponseEntity<?> findById(@PathVariable Integer id) {
+        Brewerie brewerie = brewerieRepository.findById(id).orElseThrow(() -> new BrewerieNotFoundException(id));
+        return new ResponseEntity<>(brewerie, HttpStatus.OK);
     }
 }

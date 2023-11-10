@@ -33,21 +33,23 @@ public class BeerController {
     }
 
     @GetMapping("/beers")
-    public List<Beer> findAll() {
-        return beerRepository.findAll();
+    public ResponseEntity<?> findAll() {
+        List<Beer> allBeers = beerRepository.findAll();
+        return new ResponseEntity<>(allBeers, HttpStatus.OK);
     }
 
 
     @GetMapping(path = "/beers", params = {"page", "size"})
-    public Page<Beer> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
+    public ResponseEntity<?> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return beerRepository.findAll(pageRequest);
+        Page<Beer> allBeersPaged = beerRepository.findAll(pageRequest);
+        return new ResponseEntity<>(allBeersPaged, HttpStatus.OK);
     }
 
     @GetMapping("/beer/{id}")
-    public Optional<Beer> findById(@PathVariable Integer id) {
-        beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
-        return beerRepository.findById(id);
+    public ResponseEntity<?> findById(@PathVariable Integer id) {
+        Beer beer = beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
+        return new ResponseEntity<>(beer, HttpStatus.OK);
     }
 
     @PostMapping("/beer")

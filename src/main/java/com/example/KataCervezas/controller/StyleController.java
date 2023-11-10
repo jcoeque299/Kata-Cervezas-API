@@ -7,6 +7,7 @@ import com.example.KataCervezas.repository.StyleRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,19 +26,21 @@ public class StyleController {
     }
 
     @GetMapping("/styles")
-    public List<Style> findAll() {
-        return styleRepository.findAll();
+    public ResponseEntity<?> findAll() {
+        List<Style> allStyles = styleRepository.findAll();
+        return new ResponseEntity<>(allStyles, HttpStatus.OK);
     }
 
     @GetMapping(path = "/styles", params = {"page", "size"})
-    public Page<Style> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
+    public ResponseEntity<?> findAllAndPage(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return styleRepository.findAll(pageRequest);
+        Page<Style> allStylesPaged = styleRepository.findAll(pageRequest);
+        return new ResponseEntity<>(allStylesPaged, HttpStatus.OK);
     }
 
     @GetMapping("/style/{id}")
-    public Optional<Style> findById(@PathVariable Integer id) {
-        styleRepository.findById(id).orElseThrow(() -> new StyleNotFoundException(id));
-        return styleRepository.findById(id);
+    public ResponseEntity<?> findById(@PathVariable Integer id) {
+        Style style = styleRepository.findById(id).orElseThrow(() -> new StyleNotFoundException(id));
+        return new ResponseEntity<>(style, HttpStatus.OK);
     }
 }
